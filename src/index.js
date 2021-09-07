@@ -8,6 +8,8 @@ const EMPTY_MESSAGE = 'No dates available';
 const pollForAvailability = async () => {
     let message = EMPTY_MESSAGE;
 
+    sendMessage('Starting to poll for availability ...');
+
     while (true) {
         try {
             const [availableDates] = await Promise.all([

@@ -13,7 +13,7 @@ const getAvailableDates = async () => {
         .QuotaUsageByMember;
         
     const availableDates = Object.entries(availabilityInfo)
-        .filter(([, { remaining }]) => remaining >= 1)
+        .filter(([, { remaining }]) => remaining >= 2)
         .map(([date]) => date.replace(/T00:00:00Z/g, ''));
 
     return availableDates;
