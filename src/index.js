@@ -1,18 +1,20 @@
-const fs = require('fs');
 const getAvailableDates = require('./getAvailableDates');
 const sendMessage = require('./sendMessage');
+const addLog = require('./addLog');
 
 const POLL_PERIOD_MS = 30000;
+const ERROR_THRESHOLD = 5;
 const URL = 'https://www.recreation.gov/permits/233273/registration/detailed-availability?date=2021-09-01';
-const STARTUP_MESSAGE = 'Starting to poll for availability...';
 const EMPTY_MESSAGE = 'No dates available';
+const STARTUP_MESSAGE = 'Starting to poll for availability...';
+const ERROR_MESSAGE = `Exited after ${ERROR_THRESHOLD} errors`;
 
-const pollForAvailability = async () => {
+const pollForAvailability = async (errorCount = 0) => {
     let message = EMPTY_MESSAGE;
 
-    sendMessage(STARTUP_MESSAGE);
+    addLog(STARTUP_MESSAGE);
 
-    while (true) {
+    while (errorCount < ERROR_THRESHOLD) {
         try {
             const [availableDates] = await Promise.all([
                 getAvailableDates(),
@@ -20,10 +22,7 @@ const pollForAvailability = async () => {
             ]);
     
             const nextMessage = availableDates.join(' / ') || EMPTY_MESSAGE;
-
-            const timestamp = new Date().toString().split(' ').slice(0, 5).join(' ');
-            const toLog = `${timestamp} - ${nextMessage}\n`;
-            fs.appendFile('logs.txt', toLog, () => {});
+            addLog(nextMessage)
             
             if (nextMessage !== message) {
                 sendMessage(`${nextMessage}\n${URL}`);
@@ -31,10 +30,13 @@ const pollForAvailability = async () => {
     
             message = nextMessage;
         } catch(err) {
-            console.log(err);
-            pollForAvailability();
+            addLog(err.message);
+            pollForAvailability(errorCount + 1);
         }
     }
+
+    addLog(ERROR_MESSAGE);
+    process.exit();
 };
 
 pollForAvailability();
