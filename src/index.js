@@ -4,7 +4,7 @@ const addLog = require('./addLog');
 
 const POLL_PERIOD_MS = 30000;
 const ERROR_THRESHOLD = 5;
-const URL = 'https://www.recreation.gov/permits/233273/registration/detailed-availability?date=2021-09-01';
+const URL = 'https://www.recreation.gov/permits/233273/registration/detailed-availability?date=2021-09-18';
 const EMPTY_MESSAGE = 'No dates available';
 const STARTUP_MESSAGE = 'Starting to poll for availability...';
 const ERROR_MESSAGE = `Exited after ${ERROR_THRESHOLD} errors`;

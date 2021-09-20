@@ -1,6 +1,7 @@
 const axios = require('axios');
 
 const URL = 'https://www.recreation.gov/api/permits/233273/availability/month?start_date=2021-09-01T00:00:00.000Z&commercial_acct=false&is_lottery=false';
+const CORE_ZONE_KEY = '30';
 
 const getAvailableDates = async () => {
     const { data } = await axios.get(URL);
@@ -8,7 +9,7 @@ const getAvailableDates = async () => {
     const availabilityInfo = data
         .payload
         .availability
-        ?.['30']
+        ?.[CORE_ZONE_KEY]
         .quota_type_maps
         .QuotaUsageByMember;
         
